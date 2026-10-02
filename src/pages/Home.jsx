@@ -7,6 +7,7 @@ import { Bar, Doughnut, baseOptions, INDIGO_SOFT, TEAL_SOFT, GREEN, RED } from '
 import StatCard from '../components/StatCard';
 import ChartCard from '../components/ChartCard';
 import InsightChat from '../components/InsightChat';
+import EmptyDatasetPrompt from '../components/EmptyDatasetPrompt';
 import { StatSkeletonGrid, ChartSkeleton, TableSkeleton } from '../components/Skeletons';
 export default function Home() {
   const students = useDatasetStore((s) => s.students);
@@ -122,9 +123,14 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* KPI cards — secondary */}
-      <section className="mt-10 md:mt-14">
-        <p className="text-xs uppercase tracking-widest text-indigo-700 font-medium mb-4">Key Metrics</p>
+
+      {!loading && students.length === 0 ? (
+        <EmptyDatasetPrompt title="Awaiting Dataset Ingestion" pageName="the Executive Dashboard" />
+      ) : (
+        <>
+          {/* KPI cards — secondary */}
+          <section className="mt-10 md:mt-14">
+            <p className="text-xs uppercase tracking-widest text-indigo-700 font-medium mb-4">Key Metrics</p>
         {loading ? (
           <StatSkeletonGrid count={5} />
         ) : (
@@ -231,6 +237,8 @@ export default function Home() {
           </p>
         </div>
       </section>
+    </>
+  )}
     </div>
   );
 }

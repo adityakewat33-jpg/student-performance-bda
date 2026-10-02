@@ -3,6 +3,7 @@ import { Search, Check, X, Clock, BookOpen, Award } from 'lucide-react';
 import { useDatasetStore } from '../store/datasetStore';
 import { performanceGroup, PERF_GROUPS, SUBJECTS } from '../data/analytics';
 import EmptyState from '../components/EmptyState';
+import EmptyDatasetPrompt from '../components/EmptyDatasetPrompt';
 import { TableSkeleton } from '../components/Skeletons';
 function groupMeta(key) {
   return PERF_GROUPS.find((g) => g.key === key) || PERF_GROUPS[3];
@@ -56,7 +57,12 @@ export default function StudentSearch() {
           Type a Student ID or a name. Partial matches work, and results update as you type.
         </p>
       </header>
-      <div role="form" aria-label="Search students" className="mt-6 max-w-2xl">
+
+      {!loading && students.length === 0 ? (
+        <EmptyDatasetPrompt title="Awaiting Dataset for Student Search" pageName="Student Search" />
+      ) : (
+        <>
+          <div role="form" aria-label="Search students" className="mt-6 max-w-2xl">
         <div className="relative">
           <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
@@ -252,6 +258,8 @@ export default function StudentSearch() {
           </div>
         </div>
       )}
-    </div>
-  );
+    </>
+  )}
+</div>
+);
 }

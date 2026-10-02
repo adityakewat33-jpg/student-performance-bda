@@ -118,16 +118,37 @@ export const useDatasetStore = create((set, get) => ({
   init: async () => {
     if (get().initialized) return;
     set({ initialized: true, loading: true });
-    const generated = generateStudents(GENERATED_COUNT, GENERATED_SEED);
+    // Empty dataset by default so the upload process can be demonstrated live in front of faculty
     const stored = readStoredImport();
     set({
-      generated,
+      generated: [],
       imported: stored ? stored.rows : null,
       importMeta: stored ? stored.meta : null,
     });
     get().recompute();
-    await get().refreshDb();
     set({ loading: false });
+  },
+
+  loadGeneratedSample: () => {
+    const generated = generateStudents(GENERATED_COUNT, GENERATED_SEED);
+    const meta = {
+      fileName: 'Benchmark Dataset (1,000 students)',
+      totalRows: generated.length,
+      importedRows: generated.length,
+      cleanedRows: 0,
+      skippedRows: 0,
+      duplicateRows: 0,
+      isPreset: true,
+      persisted: true,
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows: generated, meta }));
+    } catch (err) {
+      meta.persisted = false;
+    }
+    set({ imported: generated, importMeta: meta });
+    get().recompute();
+    return meta;
   },
 
   applyImport: (rows, meta) => {
@@ -170,7 +191,17 @@ export const useDatasetStore = create((set, get) => ({
     } catch (err) {
       /* ignore */
     }
-    set({ imported: null, importMeta: null });
+    set({ imported: null, importMeta: null, generated: [] });
     get().recompute();
+  },
+
+  clearAllData: () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(HISTORY_KEY);
+    } catch (err) {
+      /* ignore */
+    }
+    set({ imported: null, importMeta: null, generated: [], students: [], dbRecords: [] });
   },
 }));

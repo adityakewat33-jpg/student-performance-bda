@@ -3,6 +3,7 @@ import { useDatasetStore } from '../store/datasetStore';
 import { computeAnalytics } from '../data/analytics';
 import { Line, Bar, Scatter, baseOptions, INDIGO_SOFT, TEAL_SOFT } from '../components/charts';
 import ChartCard from '../components/ChartCard';
+import EmptyDatasetPrompt from '../components/EmptyDatasetPrompt';
 import { ChartSkeleton } from '../components/Skeletons';
 export default function PerformanceTrends() {
   const students = useDatasetStore((s) => s.students);
@@ -146,7 +147,12 @@ export default function PerformanceTrends() {
           is the grouping stage of the pipeline — records are bucketed first, then averaged inside each bucket.
         </p>
       </header>
-      <section className="mt-8 space-y-4 md:space-y-6">
+
+      {!loading && students.length === 0 ? (
+        <EmptyDatasetPrompt title="Awaiting Dataset for Performance Trends" pageName="Performance Trends" />
+      ) : (
+        <>
+          <section className="mt-8 space-y-4 md:space-y-6">
         {loading ? (
           <ChartSkeleton height={280} />
         ) : (
@@ -230,6 +236,8 @@ export default function PerformanceTrends() {
           </div>
         </section>
       ) : null}
-    </div>
-  );
+    </>
+  )}
+</div>
+);
 }

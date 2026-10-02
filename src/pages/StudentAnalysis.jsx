@@ -13,6 +13,7 @@ import {
   RED,
 } from '../components/charts';
 import ChartCard from '../components/ChartCard';
+import EmptyDatasetPrompt from '../components/EmptyDatasetPrompt';
 import { ChartSkeleton, StatSkeletonGrid } from '../components/Skeletons';
 import StatCard from '../components/StatCard';
 export default function StudentAnalysis() {
@@ -161,7 +162,12 @@ export default function StudentAnalysis() {
           recomputed from the records currently loaded.
         </p>
       </header>
-      <section className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+
+      {!loading && students.length === 0 ? (
+        <EmptyDatasetPrompt title="Awaiting Dataset for Student Analysis" pageName="Student Analysis" />
+      ) : (
+        <>
+          <section className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {loading ? (
           <>
             <ChartSkeleton />
@@ -291,6 +297,8 @@ export default function StudentAnalysis() {
           </div>
         </div>
       </section>
+    </>
+  )}
     </div>
   );
 }
