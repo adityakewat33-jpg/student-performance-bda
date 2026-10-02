@@ -19,6 +19,7 @@ import {
   Info,
 } from 'lucide-react';
 import { useDatasetStore, readLocalImportHistory, saveLocalImportHistory, clearLocalImportHistory } from '../store/datasetStore';
+import { generateStudents } from '../data/generator';
 import {
   parseDatasetFile,
   SAMPLE_CSV,
@@ -167,6 +168,11 @@ export default function UploadDataset() {
     });
   };
 
+  const handleDownloadFull1000Dataset = () => {
+    const rows = generateStudents(1000, 20260114);
+    exportToCsv(rows, 'students_dataset_1000.csv');
+  };
+
   const handleDownloadSampleCsv = () => {
     const blob = new Blob([SAMPLE_CSV], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -282,6 +288,14 @@ export default function UploadDataset() {
 
         {/* Template Downloads & Active Export */}
         <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleDownloadFull1000Dataset}
+            className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-colors inline-flex items-center gap-1.5 shadow-sm"
+          >
+            <Download className="w-3.5 h-3.5 text-emerald-600" />
+            Download 1,000 Students (.csv)
+          </button>
           <button
             type="button"
             onClick={handleDownloadSampleCsv}
